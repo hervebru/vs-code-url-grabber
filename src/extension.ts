@@ -38,13 +38,15 @@ function copyCurrentFilePathWithCurrentLineNumber(markdown: boolean = false, inc
 			fileIdentifier = `vscode-remote/${remoteName}+${serverIp}`;
 		} else {
 			fileIdentifier = 'file';
-		}	} else if (remoteName === 'wsl') {
+		}
+	} else if (remoteName === 'wsl') {
 		const distroName = process.env.WSL_DISTRO_NAME;
 		if (distroName) {
 			fileIdentifier = `vscode-remote/wsl+${distroName}`;
 		} else {
 			fileIdentifier = 'file';
-		}	} else if (remoteName) {
+		}
+	} else if (remoteName) {
 		fileIdentifier = `vscode-remote/${remoteName}`;
 	} else if (scheme === 'file') {
 		fileIdentifier = 'file';
