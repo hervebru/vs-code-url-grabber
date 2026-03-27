@@ -43,6 +43,36 @@
         "title": "Copy Link to Current File and Line Number + Selection in Markdown Format"
       }
     ],
+    "submenus": [
+      {
+        "id": "hbru-vs-code-url-scheme-grabber.submenu",
+        "label": "Code URL Grabber"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "submenu": "hbru-vs-code-url-scheme-grabber.submenu",
+          "group": "9_urlSchemeGrabber"
+        }
+      ],
+      "hbru-vs-code-url-scheme-grabber.submenu": [
+        {
+          "command": "hbru-vs-code-url-scheme-grabber.copyLink"
+        },
+        {
+          "command": "hbru-vs-code-url-scheme-grabber.copyMarkdownLink"
+        },
+        {
+          "command": "hbru-vs-code-url-scheme-grabber.copyLinkAndSelection",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "hbru-vs-code-url-scheme-grabber.copyMarkdownLinkAndSelection",
+          "when": "editorHasSelection"
+        }
+      ]
+    },
     "configuration": {
       "title": "URL Scheme Grabber",
       "properties": {
