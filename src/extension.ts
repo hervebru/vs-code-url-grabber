@@ -19,18 +19,51 @@ function copyCurrentFilePathWithCurrentLineNumber(markdown: boolean = false, inc
 		throw new DocumentIsUntitled;
 	}
 
+	const scheme = document.uri.scheme;
+	const authority = document.uri.authority;
 	const path = document.uri.path;
-	const relativePath = vscode.workspace?.rootPath
-		? path.replace(vscode.workspace?.rootPath, "")
+	const remoteName = vscode.env.remoteName;
+
+	// When the extension runs on a remote host (SSH, WSL, etc.), files appear
+	// as local (scheme='file') from the remote's perspective. We need to
+	// reconstruct the vscode-remote URI using env.remoteName and the server IP
+	// from SSH_CONNECTION (format: client_ip client_port server_ip server_port).
+	let fileIdentifier: string;
+	if (remoteName === 'ssh-remote') {
+		const sshConnection = process.env.SSH_CONNECTION;
+		const serverIp = sshConnection?.split(' ')[2];
+		if (serverIp) {
+			fileIdentifier = `vscode-remote/${remoteName}+${serverIp}`;
+		} else {
+			fileIdentifier = 'file';
+		}
+	} else if (remoteName) {
+		fileIdentifier = `vscode-remote/${remoteName}`;
+	} else if (scheme === 'file') {
+		fileIdentifier = 'file';
+	} else {
+		fileIdentifier = `${scheme}/${authority}`;
+	}
+
+	console.log(`[URL Scheme Grabber] document.uri.scheme: ${scheme}`);
+	console.log(`[URL Scheme Grabber] document.uri.authority: ${authority}`);
+	console.log(`[URL Scheme Grabber] document.uri.toString(): ${document.uri.toString()}`);
+	console.log(`[URL Scheme Grabber] vscode.env.remoteName: ${remoteName}`);
+	console.log(`[URL Scheme Grabber] SSH_CONNECTION: ${process.env.SSH_CONNECTION}`);
+	console.log(`[URL Scheme Grabber] fileIdentifier: ${fileIdentifier}`);
+
+	const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.path;
+	const relativePath = workspaceRoot
+		? path.replace(workspaceRoot, "")
 		: path;
 	const lineNumber = editor.selection.active.line + 1;
 	const columnNumber = editor.selection.active.character + 1;
-	const config = vscode.workspace.getConfiguration('hipdotUrlSchemeGrabber');
+	const config = vscode.workspace.getConfiguration('hbruUrlSchemeGrabber');
 	const includeColumn = config.get('includeColumn');
 	const useVSCodeInsiders = config.get('useVSCodeInsiders');
 	const protocol = useVSCodeInsiders ? 'vscode-insiders' : 'vscode';
 
-	const url = `${protocol}://file${path}:${lineNumber}${includeColumn ? `:${columnNumber}` : ''}`;
+	const url = `${protocol}://${fileIdentifier}${path}:${lineNumber}${includeColumn ? `:${columnNumber}` : ''}`;
 	// return markdown ? `[${relativePath}:${lineNumber}${includeColumn ? `:${columnNumber}` : ''}](${url})` : url;
 	let output = markdown ? `[${relativePath}:${lineNumber}${includeColumn ? `:${columnNumber}` : ''}](${url})` : url;
 
@@ -51,9 +84,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "hipdot-vs-code-url-scheme-grabber" is now active!');
+	console.log('Congratulations, your extension "hbru-vs-code-url-scheme-grabber" is now active!');
 
-	let copyRawLink = vscode.commands.registerCommand('hipdot-vs-code-url-scheme-grabber.copyLink', () => {
+	let copyRawLink = vscode.commands.registerCommand('hbru-vs-code-url-scheme-grabber.copyLink', () => {
 		let filePathWithLineNumber;
 		try {
 			filePathWithLineNumber = copyCurrentFilePathWithCurrentLineNumber();
@@ -76,7 +109,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(copyRawLink);
 
-	let copyMarkdownLink = vscode.commands.registerCommand('hipdot-vs-code-url-scheme-grabber.copyMarkdownLink', () => {
+	let copyMarkdownLink = vscode.commands.registerCommand('hbru-vs-code-url-scheme-grabber.copyMarkdownLink', () => {
 		let filePathWithLineNumber;
 		try {
 			filePathWithLineNumber = copyCurrentFilePathWithCurrentLineNumber(true, false);
@@ -99,7 +132,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(copyMarkdownLink);
 
-	let copyLinkAndSelection = vscode.commands.registerCommand('hipdot-vs-code-url-scheme-grabber.copyLinkAndSelection', () => {
+	let copyLinkAndSelection = vscode.commands.registerCommand('hbru-vs-code-url-scheme-grabber.copyLinkAndSelection', () => {
 		let filePathWithLineNumberAndCode;
 		try {
 			filePathWithLineNumberAndCode = copyCurrentFilePathWithCurrentLineNumber(false, true);
@@ -123,7 +156,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(copyLinkAndSelection);
 
 
-	let copyMarkdownLinkAndSelection = vscode.commands.registerCommand('hipdot-vs-code-url-scheme-grabber.copyMarkdownLinkAndSelection', () => {
+	let copyMarkdownLinkAndSelection = vscode.commands.registerCommand('hbru-vs-code-url-scheme-grabber.copyMarkdownLinkAndSelection', () => {
 		let filePathWithLineNumberAndCode;
 		try {
 			filePathWithLineNumberAndCode = copyCurrentFilePathWithCurrentLineNumber(true, true);
