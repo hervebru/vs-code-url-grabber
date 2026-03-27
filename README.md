@@ -2,12 +2,6 @@
 
 Fork of [hipdot-vs-code-url-scheme-grabber](https://github.com/ebetancourt/hipdot-vs-code-url-scheme-grabber).
 
-Visual Studio Code has a documented way to open VS code using URLs (in the MacOS / iOS world, this is commonly called a URL Scheme or URI Scheme). You can see the documentation here: [Opening VS Code with URLs](https://code.visualstudio.com/docs/editor/command-line#_opening-vs-code-with-urls). This is something I personally use when planning out the steps I will take to implement a feature. However there is no built in way to get the URL from VS Code, so I have been copying the absolute path and manually creating the URLs (with snippets in my notes program of choice).
-
-Other times you might want links that open VS Code to a specific file location:
-- When adding tasks for yourself in your task manager
-- taking notes on the way a codebase works
-
 ## Features
 
 This extension adds four commands (also available via the editor context menu):
@@ -17,7 +11,21 @@ This extension adds four commands (also available via the editor context menu):
 * Copy Link to Current File and Line Number + Selection
 * Copy Link to Current File and Line Number + Selection in Markdown Format
 
-Additionally supports SSH remote connections — generates correct `vscode-remote` URIs when connected via SSH.
+Additionally supports SSH-remote and WSL-remote connections — generates correct `vscode-remote` URIs when connected via SSH and to WSL.
+
+The remote type (`ssh-remote` or `wsl`) comes from `vscode.env.remoteName`.
+
+
+### SSH-remote URL example
+[vscode://vscode-remote/ssh-remote+192.168.100.1/path/to/file:123](vscode://vscode-remote/ssh-remote+192.168.100.1/path/to/file:123)
+
+This extension gets the remote IP from `process.env.SSH_CONNECTION`.
+
+### WSL-remote URL example
+[vscode://vscode-remote/wsl+Ubuntu/path/to/file:123](vscode://vscode-remote/wsl+Ubuntu/path/to/file:123)
+
+... where `Ubuntu` is the name of the WSL distro as seen from the WSL_DISTRO_NAME env variable that is set under WSL.
+This extension gets the distro name from `process.env.WSL_DISTRO_NAME`.
 
 ## Extension Settings
 
@@ -29,18 +37,18 @@ This extension contributes following settings, which can be found under the head
 ## Known Issues
 
 None yet
+( + No support for Dev Containers and Tunnels)
 
 ## Release Notes
 
-### 2.0.0
+### 2.1.0
 
 Fork of the original extension with the following additions:
 
 - SSH remote support
+- WSL remote support
 - Context menu sub-menu with all commands
 - Renamed commands and configuration namespace
-
-See [CHANGELOG.md](CHANGELOG.md) for details.
 
 ---
 
@@ -48,9 +56,4 @@ See [CHANGELOG.md](CHANGELOG.md) for details.
 
 Based on the work of [Eric Betancourt](https://github.com/ebetancourt) in [hipdot-vs-code-url-scheme-grabber](https://github.com/ebetancourt/hipdot-vs-code-url-scheme-grabber), which itself was based on [Nisanth Chunduru](https://github.com/nisanthchunduru)'s [vscode-copy-filepath-with-line-number](https://github.com/nisanthchunduru/vscode-copy-filepath-with-line-number).
 
-## Contributing
 
-Issue reports and PRs are welcome at [https://github.com/hervebru/vs-code-url-grabber](https://github.com/hervebru/vs-code-url-grabber)
-
-
-**Enjoy!**
