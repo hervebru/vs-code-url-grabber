@@ -36,7 +36,7 @@
       },
       {
         "command": "hbru-vs-code-url-scheme-grabber.copyLinkAndSelection",
-        "title": "Copy Link to Current File and Line Number + Selection in Format"
+        "title": "Copy Link to Current File and Line Number + Selection"
       },
       {
         "command": "hbru-vs-code-url-scheme-grabber.copyMarkdownLinkAndSelection",
