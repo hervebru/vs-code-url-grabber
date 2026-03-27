@@ -5,7 +5,7 @@
   "publisher": "hervebru",
   "license": "MIT",
   "icon": "images/icon.png",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "repository": "https://github.com/hervebru/vs-code-url-grabber",
   "engines": {
     "vscode": "^1.76.0"
