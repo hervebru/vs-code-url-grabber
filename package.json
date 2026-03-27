@@ -95,7 +95,8 @@
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile && yarn run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.1",
@@ -104,6 +105,7 @@
     "@typescript-eslint/eslint-plugin": "^5.53.0",
     "@typescript-eslint/parser": "^5.53.0",
     "@vscode/test-electron": "^2.2.3",
+    "@vscode/vsce": "^3.7.1",
     "eslint": "^8.34.0",
     "mocha": "^10.2.0",
     "typescript": "^4.9.5"
