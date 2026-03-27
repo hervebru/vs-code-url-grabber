@@ -2,6 +2,8 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
+let outputChannel: vscode.LogOutputChannel;
+
 class NoTextEditorOpen extends Error {
 }
 
@@ -36,8 +38,13 @@ function copyCurrentFilePathWithCurrentLineNumber(markdown: boolean = false, inc
 			fileIdentifier = `vscode-remote/${remoteName}+${serverIp}`;
 		} else {
 			fileIdentifier = 'file';
-		}
-	} else if (remoteName) {
+		}	} else if (remoteName === 'wsl') {
+		const distroName = process.env.WSL_DISTRO_NAME;
+		if (distroName) {
+			fileIdentifier = `vscode-remote/wsl+${distroName}`;
+		} else {
+			fileIdentifier = 'file';
+		}	} else if (remoteName) {
 		fileIdentifier = `vscode-remote/${remoteName}`;
 	} else if (scheme === 'file') {
 		fileIdentifier = 'file';
@@ -50,7 +57,15 @@ function copyCurrentFilePathWithCurrentLineNumber(markdown: boolean = false, inc
 	console.log(`[URL Scheme Grabber] document.uri.toString(): ${document.uri.toString()}`);
 	console.log(`[URL Scheme Grabber] vscode.env.remoteName: ${remoteName}`);
 	console.log(`[URL Scheme Grabber] SSH_CONNECTION: ${process.env.SSH_CONNECTION}`);
+	console.log(`[URL Scheme Grabber] WSL_DISTRO_NAME: ${process.env.WSL_DISTRO_NAME}`);
 	console.log(`[URL Scheme Grabber] fileIdentifier: ${fileIdentifier}`);
+	outputChannel.info(`document.uri.scheme: ${scheme}`);
+	outputChannel.info(`document.uri.authority: ${authority}`);
+	outputChannel.info(`document.uri.toString(): ${document.uri.toString()}`);
+	outputChannel.info(`vscode.env.remoteName: ${remoteName}`);
+	outputChannel.info(`SSH_CONNECTION: ${process.env.SSH_CONNECTION}`);
+	outputChannel.info(`WSL_DISTRO_NAME: ${process.env.WSL_DISTRO_NAME}`);
+	outputChannel.info(`fileIdentifier: ${fileIdentifier}`);
 
 	const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.path;
 	const relativePath = workspaceRoot
@@ -82,9 +97,10 @@ function copyCurrentFilePathWithCurrentLineNumber(markdown: boolean = false, inc
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "hbru-vs-code-url-scheme-grabber" is now active!');
+	outputChannel = vscode.window.createOutputChannel('URL Scheme Grabber', { log: true });
+	context.subscriptions.push(outputChannel);
+	console.log('Congratulations, your extension "hbru-vs-code-url-scheme-grabber" is now active.');
+	outputChannel.info('Extension "hbru-vs-code-url-scheme-grabber" is now active.');
 
 	let copyRawLink = vscode.commands.registerCommand('hbru-vs-code-url-scheme-grabber.copyLink', () => {
 		let filePathWithLineNumber;
