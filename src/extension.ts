@@ -60,14 +60,14 @@ function copyCurrentFilePathWithCurrentLineNumber(markdown: boolean = false, inc
 	console.log(`[URL Scheme Grabber] vscode.env.remoteName: ${remoteName}`);
 	console.log(`[URL Scheme Grabber] SSH_CONNECTION: ${process.env.SSH_CONNECTION}`);
 	console.log(`[URL Scheme Grabber] WSL_DISTRO_NAME: ${process.env.WSL_DISTRO_NAME}`);
-	console.log(`[URL Scheme Grabber] fileIdentifier: ${fileIdentifier}`);
+
 	outputChannel.info(`document.uri.scheme: ${scheme}`);
 	outputChannel.info(`document.uri.authority: ${authority}`);
 	outputChannel.info(`document.uri.toString(): ${document.uri.toString()}`);
 	outputChannel.info(`vscode.env.remoteName: ${remoteName}`);
 	outputChannel.info(`process.env.SSH_CONNECTION: ${process.env.SSH_CONNECTION}`);
 	outputChannel.info(`process.env.WSL_DISTRO_NAME: ${process.env.WSL_DISTRO_NAME}`);
-	outputChannel.info(`Resulting URL: ${fileIdentifier}`);
+
 
 	const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.path;
 	const relativePath = workspaceRoot
@@ -77,8 +77,7 @@ function copyCurrentFilePathWithCurrentLineNumber(markdown: boolean = false, inc
 	const columnNumber = editor.selection.active.character + 1;
 	const config = vscode.workspace.getConfiguration('hbruUrlSchemeGrabber');
 	const includeColumn = config.get('includeColumn');
-	const useVSCodeInsiders = config.get('useVSCodeInsiders');
-	const useCursor = config.get('useCursor');
+
 	function determineProtocol(config: vscode.WorkspaceConfiguration) {
 		if (config.get('useCursor')) {
 			return 'cursor';
@@ -91,7 +90,9 @@ function copyCurrentFilePathWithCurrentLineNumber(markdown: boolean = false, inc
 	const protocol = determineProtocol(config);
 
 	const url = `${protocol}://${fileIdentifier}${path}:${lineNumber}${includeColumn ? `:${columnNumber}` : ''}`;
-	// return markdown ? `[${relativePath}:${lineNumber}${includeColumn ? `:${columnNumber}` : ''}](${url})` : url;
+	console.log(`[URL Scheme Grabber] Generated URL: ${url}`);
+	outputChannel.info(`Generated URL: ${url}`);
+
 	let output = markdown ? `[${relativePath}:${lineNumber}${includeColumn ? `:${columnNumber}` : ''}](${url})` : url;
 
 	const selectedText = editor.document.getText(editor.selection);
