@@ -65,9 +65,9 @@ function copyCurrentFilePathWithCurrentLineNumber(markdown: boolean = false, inc
 	outputChannel.info(`document.uri.authority: ${authority}`);
 	outputChannel.info(`document.uri.toString(): ${document.uri.toString()}`);
 	outputChannel.info(`vscode.env.remoteName: ${remoteName}`);
-	outputChannel.info(`SSH_CONNECTION: ${process.env.SSH_CONNECTION}`);
-	outputChannel.info(`WSL_DISTRO_NAME: ${process.env.WSL_DISTRO_NAME}`);
-	outputChannel.info(`fileIdentifier: ${fileIdentifier}`);
+	outputChannel.info(`process.env.SSH_CONNECTION: ${process.env.SSH_CONNECTION}`);
+	outputChannel.info(`process.env.WSL_DISTRO_NAME: ${process.env.WSL_DISTRO_NAME}`);
+	outputChannel.info(`Resulting URL: ${fileIdentifier}`);
 
 	const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.path;
 	const relativePath = workspaceRoot
@@ -101,8 +101,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 	outputChannel = vscode.window.createOutputChannel('URL Scheme Grabber', { log: true });
 	context.subscriptions.push(outputChannel);
-	console.log('Congratulations, your extension "hbru-vs-code-url-scheme-grabber" is now active.');
-	outputChannel.info('Extension "hbru-vs-code-url-scheme-grabber" is now active.');
+	const version = context.extension.packageJSON.version;
+	console.log(`Extension "hbru-vs-code-url-scheme-grabber" v${version} is now active.`);
+	outputChannel.info(`Extension "hbru-vs-code-url-scheme-grabber" v${version} is now active.`);
+	//outputChannel.show(true);
 
 	let copyRawLink = vscode.commands.registerCommand('hbru-vs-code-url-scheme-grabber.copyLink', () => {
 		let filePathWithLineNumber;
