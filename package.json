@@ -86,7 +86,12 @@
         "hbruUrlSchemeGrabber.useVSCodeInsiders": {
           "type": "boolean",
           "default": false,
-          "description": "Format the link so that it opens in VSCode Insiders instead of VSCode"
+          "description": "Use a `vscode-insiders://` scheme so that the link opens in VSCode Insiders"
+        },
+        "hbruUrlSchemeGrabber.useCursor": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use a `cursor://` scheme so that the link opens in Cursor"
         }
       }
     }

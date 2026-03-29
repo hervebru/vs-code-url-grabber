@@ -78,7 +78,17 @@ function copyCurrentFilePathWithCurrentLineNumber(markdown: boolean = false, inc
 	const config = vscode.workspace.getConfiguration('hbruUrlSchemeGrabber');
 	const includeColumn = config.get('includeColumn');
 	const useVSCodeInsiders = config.get('useVSCodeInsiders');
-	const protocol = useVSCodeInsiders ? 'vscode-insiders' : 'vscode';
+	const useCursor = config.get('useCursor');
+	function determineProtocol(config: vscode.WorkspaceConfiguration) {
+		if (config.get('useCursor')) {
+			return 'cursor';
+		} else if (config.get('useVSCodeInsiders')) {
+			return 'vscode-insiders';
+		} else {
+			return 'vscode';
+		}
+	}
+	const protocol = determineProtocol(config);
 
 	const url = `${protocol}://${fileIdentifier}${path}:${lineNumber}${includeColumn ? `:${columnNumber}` : ''}`;
 	// return markdown ? `[${relativePath}:${lineNumber}${includeColumn ? `:${columnNumber}` : ''}](${url})` : url;
