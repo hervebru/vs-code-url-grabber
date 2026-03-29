@@ -25,33 +25,46 @@ function copyCurrentFilePathWithCurrentLineNumber(markdown: boolean = false, inc
 	const authority = document.uri.authority;
 	const path = document.uri.path;
 	const remoteName = vscode.env.remoteName;
+	const config = vscode.workspace.getConfiguration('hbruUrlSchemeGrabber');
 
 	// When the extension runs on a remote host (SSH, WSL, etc.), files appear
 	// as local (scheme='file') from the remote's perspective. We need to
 	// reconstruct the vscode-remote URI using env.remoteName and the server IP
 	// from SSH_CONNECTION (format: client_ip client_port server_ip server_port).
-	let fileIdentifier: string;
+	// If ssh-remote is setup to connect using a DNS name, I haven't found a way
+	// to get the info via the API, so I am adding a configuration option to specify
+	// the FQDN of the ssh-remote host.
+	// For WSL, we can use the distro name from WSL_DISTRO_NAME.
+
+	let uriScheme: string;
 	if (remoteName === 'ssh-remote') {
-		const sshConnection = process.env.SSH_CONNECTION;
-		const serverIp = sshConnection?.split(' ')[2];
-		if (serverIp) {
-			fileIdentifier = `vscode-remote/${remoteName}+${serverIp}`;
+		// Check if configuration has an SSH remote FQDN
+		const sshRemoteFqdn = config.get<string>('sshRemoteFqdn');
+		if (sshRemoteFqdn) {
+			uriScheme = `vscode-remote/${remoteName}+${sshRemoteFqdn}`;
 		} else {
-			fileIdentifier = 'file';
+			// Fall back to extracting server IP from SSH_CONNECTION
+			const sshConnection = process.env.SSH_CONNECTION;
+			const serverIp = sshConnection?.split(' ')[2];
+			if (serverIp) {
+				uriScheme = `vscode-remote/${remoteName}+${serverIp}`;
+			} else {
+				uriScheme = 'file';
+			}
 		}
 	} else if (remoteName === 'wsl') {
 		const distroName = process.env.WSL_DISTRO_NAME;
 		if (distroName) {
-			fileIdentifier = `vscode-remote/wsl+${distroName}`;
+			uriScheme = `vscode-remote/wsl+${distroName}`;
 		} else {
-			fileIdentifier = 'file';
+			uriScheme = 'file';
 		}
-	} else if (remoteName) {
-		fileIdentifier = `vscode-remote/${remoteName}`;
+	} else if (remoteName) { // Fallback to unknown remote type
+		uriScheme = `vscode-remote/${remoteName}`;
 	} else if (scheme === 'file') {
-		fileIdentifier = 'file';
+		uriScheme = 'file';
 	} else {
-		fileIdentifier = `${scheme}/${authority}`;
+		uriScheme = `${scheme}/${authority}`;
 	}
 
 	console.log(`[URL Scheme Grabber] document.uri.scheme: ${scheme}`);
@@ -75,7 +88,6 @@ function copyCurrentFilePathWithCurrentLineNumber(markdown: boolean = false, inc
 		: path;
 	const lineNumber = editor.selection.active.line + 1;
 	const columnNumber = editor.selection.active.character + 1;
-	const config = vscode.workspace.getConfiguration('hbruUrlSchemeGrabber');
 	const includeColumn = config.get('includeColumn');
 
 	function determineProtocol(config: vscode.WorkspaceConfiguration) {
@@ -89,7 +101,7 @@ function copyCurrentFilePathWithCurrentLineNumber(markdown: boolean = false, inc
 	}
 	const protocol = determineProtocol(config);
 
-	const url = `${protocol}://${fileIdentifier}${path}:${lineNumber}${includeColumn ? `:${columnNumber}` : ''}`;
+	const url = `${protocol}://${uriScheme}${path}:${lineNumber}${includeColumn ? `:${columnNumber}` : ''}`;
 	console.log(`[URL Scheme Grabber] Generated URL: ${url}`);
 	outputChannel.info(`Generated URL: ${url}`);
 

@@ -92,6 +92,11 @@
           "type": "boolean",
           "default": false,
           "description": "Use a `cursor://` scheme so that the link opens in Cursor"
+        },
+        "hbruUrlSchemeGrabber.sshRemoteFqdn": {
+          "type": "string",
+          "default": "",
+          "description": "The FQDN of your SSH remote host (use this if ssh-remote is configured to connect using a DNS name instead of IP address)"
         }
       }
     }
