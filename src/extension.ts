@@ -41,13 +41,13 @@ function copyCurrentFilePathWithCurrentLineNumber(markdown: boolean = false, inc
 		// Check if configuration has an SSH remote FQDN
 		const sshRemoteFqdn = config.get<string>('sshRemoteFqdn');
 		if (sshRemoteFqdn) {
-			uriScheme = `vscode-remote/${remoteName}+${sshRemoteFqdn}`;
+			uriScheme = `vscode-remote/${remoteName}%2B${sshRemoteFqdn}`;
 		} else {
 			// Fall back to extracting server IP from SSH_CONNECTION
 			const sshConnection = process.env.SSH_CONNECTION;
 			const serverIp = sshConnection?.split(' ')[2];
 			if (serverIp) {
-				uriScheme = `vscode-remote/${remoteName}+${serverIp}`;
+				uriScheme = `vscode-remote/${remoteName}%2B${serverIp}`;
 			} else {
 				uriScheme = 'file';
 			}
@@ -55,7 +55,7 @@ function copyCurrentFilePathWithCurrentLineNumber(markdown: boolean = false, inc
 	} else if (remoteName === 'wsl') {
 		const distroName = process.env.WSL_DISTRO_NAME;
 		if (distroName) {
-			uriScheme = `vscode-remote/wsl+${distroName}`;
+			uriScheme = `vscode-remote/wsl%2B${distroName}`;
 		} else {
 			uriScheme = 'file';
 		}
