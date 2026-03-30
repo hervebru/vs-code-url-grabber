@@ -1,0 +1,126 @@
+{
+  "name": "hbru-vs-code-url-grabber",
+  "displayName": "Code URL Grabber",
+  "description": "Copy the vscode link to your current file and line number to the clipboard. Returns either the raw link or a markdown link.",
+  "publisher": "hervebru",
+  "license": "MIT",
+  "icon": "images/icon.png",
+  "version": "2.1.6",
+  "repository": "https://github.com/hervebru/vs-code-url-grabber",
+  "engines": {
+    "vscode": "^1.76.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "copy",
+    "file path",
+    "line number",
+    "clipboard",
+    "URL Scheme",
+    "URI Scheme",
+    "Current file and line number"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "hbru-vs-code-url-grabber.copyLink",
+        "title": "Copy Link to Current File and Line Number"
+      },
+      {
+        "command": "hbru-vs-code-url-grabber.copyMarkdownLink",
+        "title": "Copy Link to Current File and Line Number in Markdown Format"
+      },
+      {
+        "command": "hbru-vs-code-url-grabber.copyLinkAndSelection",
+        "title": "Copy Link to Current File and Line Number + Selection"
+      },
+      {
+        "command": "hbru-vs-code-url-grabber.copyMarkdownLinkAndSelection",
+        "title": "Copy Link to Current File and Line Number + Selection in Markdown Format"
+      }
+    ],
+    "submenus": [
+      {
+        "id": "hbru-vs-code-url-grabber.submenu",
+        "label": "Code URL Grabber"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "submenu": "hbru-vs-code-url-grabber.submenu",
+          "group": "99_codeUrlGrabber"
+        }
+      ],
+      "hbru-vs-code-url-grabber.submenu": [
+        {
+          "command": "hbru-vs-code-url-grabber.copyLink"
+        },
+        {
+          "command": "hbru-vs-code-url-grabber.copyMarkdownLink"
+        },
+        {
+          "command": "hbru-vs-code-url-grabber.copyLinkAndSelection",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "hbru-vs-code-url-grabber.copyMarkdownLinkAndSelection",
+          "when": "editorHasSelection"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Code URL Grabber",
+      "properties": {
+        "hbruCodeUrlGrabber.includeColumn": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include the column number in the link to the current file and line number"
+        },
+        "hbruCodeUrlGrabber.useVSCodeInsiders": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use a `vscode-insiders://` scheme so that the link opens in VSCode Insiders"
+        },
+        "hbruCodeUrlGrabber.useCursor": {
+          "type": "boolean",
+          "default": false,
+          "description": "Use a `cursor://` scheme so that the link opens in Cursor"
+        },
+        "hbruCodeUrlGrabber.sshRemoteFqdn": {
+          "type": "string",
+          "default": "",
+          "description": "The FQDN of your SSH remote host (use this if ssh-remote is configured to connect using a DNS name instead of IP address)"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "yarn run compile && yarn run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.76.0",
+    "@typescript-eslint/eslint-plugin": "^5.53.0",
+    "@typescript-eslint/parser": "^5.53.0",
+    "@vscode/test-electron": "^2.2.3",
+    "@vscode/vsce": "^3.7.1",
+    "eslint": "^8.34.0",
+    "mocha": "^10.2.0",
+    "typescript": "^4.9.5"
+  },
+  "author": "hervebru"
+}
