@@ -1,6 +1,26 @@
 # Code URL Grabber README
 
-Fork of [hipdot-vs-code-url-scheme-grabber](https://github.com/ebetancourt/hipdot-vs-code-url-scheme-grabber).
+Fork of [hipdot-vs-code-url-scheme-grabber](https://github.com/ebetancourt/hipdot-vs-code-url-scheme-grabber). Additionally supports SSH-remote and WSL-remote connections.
+
+Copy the vscode link to your current file and line number to the clipboard. Returns either the raw link or a markdown link.
+
+## SSH-remote URL example
+[vscode://vscode-remote/ssh-remote%2B192.168.100.1/path/to/file:123](vscode://vscode-remote/ssh-remote%2B192.168.100.1/path/to/file:123)
+
+This extension gets the remote IP from `process.env.SSH_CONNECTION`.
+> [!IMPORTANT]
+> If your ssh-remote connects using the FQDN, **you must specify the FQDN in the settings**.
+
+## WSL-remote URL example
+[vscode://vscode-remote/wsl%2BUbuntu/path/to/file:123](vscode://vscode-remote/wsl%2BUbuntu/path/to/file:123)
+
+... where `Ubuntu` is the name of the WSL distro as seen from the `WSL_DISTRO_NAME` env variable that is set in WSL.
+This extension gets the distro name from `process.env.WSL_DISTRO_NAME`.
+
+## Cursor and VS Code insiders
+> [!TIP]
+> Enable in the settings.
+
 
 ## Features
 
@@ -11,22 +31,6 @@ This extension adds four commands (also available via the editor context sub-men
 * Copy Link to Current File and Line Number + Selection.
 * Copy Link to Current File and Line Number + Selection in Markdown Format.
 
-Additionally supports SSH-remote and WSL-remote connections.
-
-The remote type (`ssh-remote` or `wsl`) comes from `vscode.env.remoteName`.
-
-
-### SSH-remote URL example
-[vscode://vscode-remote/ssh-remote+192.168.100.1/path/to/file:123](vscode://vscode-remote/ssh-remote%2B192.168.100.1/path/to/file:123)
-
-This extension gets the remote IP from `process.env.SSH_CONNECTION`.
-If your ssh-remote connects using the FQDN, **you must specify the FQDN in the settings**.
-
-### WSL-remote URL example
-[vscode://vscode-remote/wsl+Ubuntu/path/to/file:123](vscode://vscode-remote/wsl+Ubuntu/path/to/file:123)
-
-... where `Ubuntu` is the name of the WSL distro as seen from the WSL_DISTRO_NAME env variable that is set under WSL.
-This extension gets the distro name from `process.env.WSL_DISTRO_NAME`.
 
 ## Extension Settings
 
